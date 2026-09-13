@@ -27,9 +27,23 @@
               content = {
                 type = "luks";
                 name = "cryptroot";
+                extraOpenArgs = [ "--allow-discards" ];
+                settings = {
+                  allowDiscards = true;
+                };
+                extraFormatArgs = [
+                  "--type" "luks2"
+                  "--cipher" "aes-xts-plain64"
+                  "--key-size" "512"
+                  "--hash" "sha512"
+                  "--pbkdf" "argon2id"
+                ];
                 content = {
                   type = "btrfs";
                   extraArgs = ["-L" "nixos" "-f"];
+                  postCreateHook = ''
+                    btrfs subvolume snapshot -r /mnt/@root /mnt/@root-blank
+                  '';
                   subvolumes = {
                     "/root" = {
                       mountpoint = "/";
