@@ -39,7 +39,7 @@
                   extraArgs = ["-f"];
                   postCreateHook = ''
                     mount -t btrfs /dev/mapper/crypted /mnt
-                    btrfs subvolume shapshot -r /mnt/root /mnt/root-blank
+                    btrfs subvolume snapshot -r /mnt/root /mnt/root-blank
                     umount /mnt
                   '';
                   subvolumes = {
