@@ -67,6 +67,7 @@
                         "subvol=home"
                         "compress=zstd"
                         "noatime"
+                      ];
                     };
                     "/nix" = {
                       mountpoint = "/nix";
