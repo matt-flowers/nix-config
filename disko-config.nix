@@ -1,13 +1,14 @@
 {
   disko.devices = {
     disk = {
-      main = {
+      nvme0n1 = {
         type = "disk";
         device = "/dev/nvme0n1";
         content = {
           type = "gpt";
           partitions = {
             ESP = {
+              label = "boot";
               name = "ESP";
               size = "1024M";
               type = "EF00";
@@ -15,17 +16,19 @@
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot";
-                mountOptions = [ "umask=0077" ];
+                mountOptions = [ 
+                  "defaults" 
+                ];
               };
             };
             luks = {
               size = "100%";
+              label = "luks";
               content = {
                 type = "luks";
-                name = "crypted";
+                name = "cryptroot";
                 settings = {
                   allowDiscards = true;
-                  bypassWorkqueues = true;
                 };
                 extraFormatArgs = [
                   "--type" "luks2"
@@ -36,9 +39,9 @@
                 ];
                 content = {
                   type = "btrfs";
-                  extraArgs = ["-f"];
+                  extraArgs = ["-L" "nixos" "-f"];
                   postCreateHook = ''
-                    mount -t btrfs /dev/mapper/crypted /mnt
+                    mount -t btrfs /dev/mapper/cryptroot /mnt
                     btrfs subvolume snapshot -r /mnt/root /mnt/root-blank
                     umount /mnt
                   '';
@@ -50,6 +53,20 @@
                         "compress=zstd"
                         "noatime"
                       ];
+                    };
+                    "/root-blank" = {
+                      mountOptions = [
+                        "subvol=root-blank"
+                        "nodatacow"
+                        "noatime"
+                      ];
+                    };
+                    "/home" = {
+                      mountpoint = "/home";
+                      mountOptions = [
+                        "subvol=home"
+                        "compress=zstd"
+                        "noatime"
                     };
                     "/nix" = {
                       mountpoint = "/nix";
@@ -67,9 +84,25 @@
                         "noatime"
                       ];
                     };
-                    "/swap" = {
-                      swap.swapfile.size = "34G";
-                      mountpoint = "/swap";
+                    "/log" = {
+                      mountpoint = "/var/log";
+                      mountOptions = [
+                        "subvol=lib"
+                        "compress=zstd"
+                        "noatime"
+                      ];
+                    };
+                    "/lib" = {
+                      mountpoint = "/var/lib";
+                      mountOptions = [
+                        "subvol=lib"
+                        "compress=zstd"
+                        "noatime"
+                      ];
+                    };
+                    "/persist/swap" = {
+                      swap.swapfile.size = "10G";
+                      mountpoint = "/persist/swap";
                       mountOptions = [
                         "subvol=swap"
                         "noatime"
@@ -87,4 +120,6 @@
     };
   };
   fileSystems."/persist".neededForBoot = true;
+  fileSystems."/var/log".neededForBoot = true;
+  fileSystems."/var/lib".neededForBoot = true;
 }
