@@ -14,6 +14,9 @@
       imports = [
         inputs.self.modules.nixos.audio
         inputs.self.modules.nixos.bluetooth
+        inputs.self.modules.nixos.cosmic-desktop
+        inputs.self.modules.nixos.kde-plasma
+        inputs.self.modules.nixos.kde-connect
         inputs.self.modules.nixos.printing
         inputs.self.modules.nixos.virtualisation
       ];
