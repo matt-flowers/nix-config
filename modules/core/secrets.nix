@@ -23,7 +23,7 @@
         ];
 
         sops = {
-          defaultSopsFile = lib.mkDefault ../../secrets/${cofig.networking.hostName}.yaml;
+          defaultSopsFile = lib.mkDefault ../../secrets/${config.networking.hostName}.yaml;
           age.sshKeyPaths =
             if config.impermanence.enable then
               lib.mkDefault [ "/persist/root/.ssh/id_ed25519" ]
