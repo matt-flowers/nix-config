@@ -1,0 +1,68 @@
+{
+  inputs,
+  ...
+}:
+{
+  flake.modules.nixos.vm-disk =
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
+    {
+      disko.devices = {
+        disk = {
+          main = {
+            type = "disk";
+            device = "/dev/vda";
+            content = {
+              type = "gpt";
+              partitions = {
+                boot = {
+                  size = "1M";
+                  type = "EF02";
+                };
+                ESP = {
+                  size = "512M";
+                  type = "EF00";
+                  content = {
+                    type = "filesystem";
+                    format = "vfat";
+                    mountpoint = "/boot";
+                  };
+                };
+                root = {
+                  size = "100%"
+                  content = {
+                    type = "btrfs";
+                    extraArgs = [ "-f" ];
+                    subvolumes = {
+                      "/root" = {
+                        mountpoint = "/";
+                      };
+
+                      "/persist" = {
+                        mountpoint = "/persist";
+                        mountOptions = [ "subvol=persist" ];
+                      };
+
+                      "/nix" = {
+                        mountpoint = "/nix";
+                        mountOptions = [ "subvol=nix" ];
+                      };
+
+                      "/swap" = {
+                        mountpoint = "/.swapvol";
+                        swap.swapfile.size = "8192M";
+                      };
+                    };
+                  };
+                };
+              };
+            };
+          };
+        };
+      };
+    };
+}
