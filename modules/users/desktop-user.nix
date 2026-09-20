@@ -48,7 +48,7 @@
         })
 
         (lib.mkIf config.impermanence.enable {
-          environment.persistance."/persist".users.${username} = {
+          environment.persistence."/persist".users.${username} = {
             directories = [
               "Desktop"
               "Documents"
