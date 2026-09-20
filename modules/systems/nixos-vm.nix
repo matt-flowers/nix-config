@@ -5,7 +5,7 @@
   ...
 }:
 {
-  flake.modules.nixos.nixos-vm = lib.mkMerge [
+  flake.modules.nixos.matt-vm = lib.mkMerge [
     (self.factory.desktop-user {
       username = "matt";
       isAdmin = true;
