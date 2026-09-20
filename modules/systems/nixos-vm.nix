@@ -26,7 +26,7 @@
       inputs.self.modules.nixos.vm
       inputs.self.modules.nixos.core
       inputs.self.modules.nixos.desktop
-      inputs.self.modules.nixos.nixos-vm
+      inputs.self.modules.nixos.matt-vm
       {
         networking.hostName = "nixos-vm";
         impermanence.enable = true;
