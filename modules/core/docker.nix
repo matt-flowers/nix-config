@@ -3,7 +3,7 @@
   ...
 }:
 {
-  flake.module.nixos.docker =
+  flake.modules.nixos.docker =
     {
       config,
       lib,
